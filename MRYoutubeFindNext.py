@@ -1,5 +1,4 @@
-#! /usr/local/bin/python3
-
+#! /usr/local/bin/python3.8
 """
     MRYoutubeFindNext.py
     
@@ -163,8 +162,8 @@ class wait_for_page_load(object):
 
 date = getDateString()
 
-#open a Chrome window
-driver = webdriver.Chrome()
+#open a Safari window
+driver = webdriver.Safari()
 
 #load Youtube
 #default (i.e. no argument) youtube home page
@@ -177,7 +176,7 @@ if initial == True:
         firstclick.click()
 
 elif initial == False:
-    #plays the video at the given link (string after "youtube.com/"
+    #plays the video at the given link (string after "youtube.com/")
     fullVid = youtube + vidString
     driver.get(fullVid)
 
