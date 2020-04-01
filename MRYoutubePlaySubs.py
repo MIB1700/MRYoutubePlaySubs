@@ -37,10 +37,11 @@ import time
 vid_title = ""
 vid_duration = ""
 date = ""
-maxVids = 3;
+maxVids = 3
 count = 0
 browser = "Safari"
 
+running = True
 # input of text file with youtube channel links
 fname = ''
 youtube = "https://www.youtube.com/channel/UCLJffad_3eSofXkBwAR8pKA/"
@@ -64,11 +65,14 @@ for opt, arg in opts:
     elif opt == '-h':
         print(f'{argv[0]} --browser [Safari (default), Chrome, Firefox, InternetExplorer, Opera]')
 
-def CheckAndGoToURL(url):
+def CheckAndGoToURL(url, addStr, driver):
     if url:
         if not url.startswith('https'):
             url = 'https://' + url
-        driver.get(url)
+        if url.endswith('/') == False:
+            url = url + '/'
+
+        driver.get(url + addStr)
     else:
         exit(66)
 
@@ -76,7 +80,7 @@ def getDateString():
     date = datetime.datetime.now()
     return date.strftime("%x_%X")
 
-def PlaySomething():
+def PlaySomething(wait, waitTitle, waitDuration):
     #get the grid each time just in case someting goes wrong
     #TODO: add a try statement
     grid = wait.until(EC.presence_of_all_elements_located((By.XPATH, "//ytd-grid-video-renderer")))
@@ -90,14 +94,14 @@ def PlaySomething():
         randVid = random.randint(0, vidCount)
         grid[randVid].click()
 
-        vid_title, vid_duration = GetVidInfo()
+        vid_title, vid_duration = GetVidInfo(waitTitle, waitDuration)
         print(f"title: {vid_title}")
         print(f"duration: {vid_duration}")
     elif vidCount == 1:
     #if only one grid element, play that 
         grid[0].click()
 
-        vid_title, vid_duration = GetVidInfo()
+        vid_title, vid_duration = GetVidInfo(waitTitle, waitDuration)
     else:
         print("no videos found... moving on to next channel")
         return
@@ -118,13 +122,13 @@ def VidLength2Secs(vidLen):
     lengthSecs = sum(x * int(t) for x, t in zip([3600, 60, 1], vidLen.split(":")))
     return lengthSecs
 
-def GetVidInfo():
+def GetVidInfo(waitTitle, waitDuration):
     vid_title = waitTitle.until(EC.presence_of_element_located((By.CSS_SELECTOR,"h1.title yt-formatted-string"))).text
     vid_duration = waitDuration.until(EC.presence_of_element_located((By.XPATH, "//span[@class='ytp-time-duration']"))).text
     return vid_title, vid_duration
 
-def OpenLinksFile():
-    with open(fname, 'r') as rawfile:
+def OpenLinksFile(file):
+    with open(file, 'r') as rawfile:
         lines = rawfile.readlines()
     
     rawfile.close()
@@ -139,46 +143,55 @@ def PickRandomLink(links):
     return link
 
 #open a browser window
+#maybe should be implemented to be able to switch browsers?
 '''
 # [Safari (default), Chrome, Firefox, InternetExplorer, Opera]')
 if browser.upper() == "SAFARI":
 elif browser.upper() == "CHROME":
 elif browser.upper() == "FIREFOX":
 elif browser.upper() == "IE":
-
-try:
-    driver = webdriver.Safari()
-        #maximize window
-    driver.maximize_window()
-    wait = WebDriverWait(driver, 30)
-    waitTitle = WebDriverWait(driver, 30)
-    waitDuration = WebDriverWait(driver, 30)
-    waitInfo = WebDriverWait(driver, 30)
-except WebDriverException:
-    print("argh....")
-    exit(66)
-#------------------------------------------------------
-
-signIn = wait.until(EC.presence_of_element_located((By.XPATH, "/html/body/ytd-app/div/div/ytd-masthead/div[3]/div[2]/div[2]/ytd-button-renderer/a/paper-button")))
-signIn.click()
-
-#------------------------------------------------------
-
-while True:
-    lines = OpenLinksFile()
-    link = PickRandomLink(lines) + "videos"
-
-    CheckAndGoToURL(link)
-
-    for times in range(maxVids):
-        PlaySomething()
-        driver.back()
 '''
 #------------------------------------------------------
-#driver.close()
-
 def main():
     print("hello")
+    try:
+        #open a browser window
+        #here you could switch to a different browser type like Chrome or Firefox
+        driver = webdriver.Safari()
+        #maximize window
+        driver.maximize_window()
+        #setup wait.until functions
+        wait = WebDriverWait(driver, 30)
+        waitTitle = WebDriverWait(driver, 30)
+        waitDuration = WebDriverWait(driver, 30)
+        #waitInfo = WebDriverWait(driver, 30)
+
+        #read in the text file and store all the links
+        #in lines variable
+        lines = OpenLinksFile(fname)
+
+        #this will paly indefinitly or until something breaks
+        #quit with ctr+d or by closing the browser
+        while running:
+            #pick a random link
+            link = PickRandomLink(lines)
+
+            #check the link is formatted properly 
+            CheckAndGoToURL(link, "videos", driver)
+
+            #pick a random video on the page and play it
+            #when video is done, go back to all videos
+            #and pick another random one 
+            for _ in range(maxVids):
+                PlaySomething(wait, waitTitle, waitDuration)
+                driver.back()
+
+    except WebDriverException:
+        print("argh....")
+        exit(66)
+    #when all done quit the browser -> shutting down
+    driver.quit()
     
+
 if __name__ == "__main__":
     main()

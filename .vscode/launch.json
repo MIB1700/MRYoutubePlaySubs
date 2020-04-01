@@ -9,7 +9,7 @@
             "type": "python",
             "request": "launch",
             "program": "${file}",
-            "args": ["--links", "MRYouTubeLinks.txt", "--numVids", "2"],
+            "args": ["--links", "MRYouTubeLinks.txt", "--numVids", "5"],
             "console": "integratedTerminal"
         }
     ]
