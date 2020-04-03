@@ -88,4 +88,4 @@ For this example, rather than playing the whole video before moving on to the ne
 
 As you can see in the video above, you need to **enable** the **Developer Settings** in Safari manually (only once unless you turn it off) so **selenium** is granted access. After that, `cd` into the working folder, input the information as shown and you are good to go. 
 
-You can send me feedback via ![](mailto:services@martin-ritter.com) or via GitHub.
+You can send me feedback via ![services@martin-ritter.com](mailto:services@martin-ritter.com) or via GitHub.
