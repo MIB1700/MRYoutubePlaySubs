@@ -3,7 +3,7 @@
 # MRYoutubePlaySubs
  
 This repository contains the script and example text file for playing 
-random videos of random channels. This idea was started by the **[\#ifollowyouyoufollowme](https://www.facebook.com/search/top/?q=%23ifollowyouyoufollowme&epa=SEARCH_BOX)**
+random videos of random channels. This idea was started by the **\#ifollowyouyoufollowme**
 movement on Facebook, where artist, musicians, composers, creatives, joined together
 to increase their visibility during the social distancing of the Covid19 pandemic.
 
@@ -88,4 +88,4 @@ For this example, rather than playing the whole video before moving on to the ne
 
 As you can see in the video above, you need to **enable** the **Developer Settings** in Safari manually (only once unless you turn it off) so **selenium** is granted access. After that, `cd` into the working folder, input the information as shown and you are good to go. 
 
-You can send me feedback via *services@martin-ritter.com* or via GitHub.
+You can send me feedback, requests, and suggestions via *services@martin-ritter.com* or here on GitHub.
