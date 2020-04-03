@@ -158,7 +158,7 @@ def PlaySomething(driver, wait):
             print(f"total time: {totalTime}")
 
             bailOnChannel = False
-            time.sleep(secs)
+            time.sleep(5)
     except:
         print("no videos found on profile...")
         bailOnChannel = True

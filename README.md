@@ -19,17 +19,11 @@ For help with your Python installation **[see](https://www.python.org)**, or use
 **[homebrew](https://brew.sh)** or **[MacPorts](https://www.macports.org)**. If using 
 the package managers, don't forget to set update your **PATH** (MacOS ships with Python 2 by default, we want to ignore it!). 
 
-For MacPorts (what I am using) run the following in the **terminal**: 
+For MacPorts (what I am using) run the following in the **terminal** (sudo means you will need to provide your user password): 
 
 `sudo port install python38`
 
-Then open your **.bash_profile** and add:
-
-`export PATH="/usr/local/bin:$PATH"`
-close the file and run:
-
-`source ~/.bash_profile;`
-to update your **PATH** environment.
+If you installed **MacPorts** it already updated the **PATH** in your `.bash_profile`... you are good to go.
 
 To make sure everything worked:
 
@@ -41,8 +35,12 @@ should output:
 
 To use the script we also need to install the **selenium** package. Run:
 
-`pip install selenium`
-(might need to be **pip3** or **pip3.8** or whatever...).
+~`pip install selenium`~
+~(might need to be **pip3** or **pip3.8** or whatever...).~
+
+turns out that when installing **selenium** via **pip** you cannot use it from the Terminal. So instead use **MacPorts** again:
+
+`sudo port install py38-selenium`
 
 Now we should be ready to run the script...
 
@@ -81,6 +79,8 @@ or
 
 `MRYoutubePlaySubs.py --links TextfileWithLinks.txt --numVids 10 -g 1`
 
-For this example, rather than playing the whole video before moving on to the next, I hardcoded it to 5 seconds to show the concept:
+For this example, rather than playing the whole video before moving on to the next, I hardcoded it to *5 seconds* to show the concept:
 
+[![Alternate Text](ImageForREADME/titleImage.png)](ImageForREADME/MRYoutubePythonExample.mp4)
 
+As you can see, you need to **enable** the **Developer Settings** in Safari manually (only once unless you turn it off) so **selenium** is granted access. After that, `cd` into the working folder, input the information as shown above and you are good to go. 
