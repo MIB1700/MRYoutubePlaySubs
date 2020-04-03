@@ -83,6 +83,6 @@ or
 
 For this example, rather than playing the whole video before moving on to the next, I hardcoded it to *5 seconds* to show the concept:
 
-[![](ImageForREADME/Youtube_screen.png)]([ImageForREADME/MRYoutubePythonExample.gif](https://youtu.be/wpLir9pybTQ)
+[![](ImageForREADME/Youtube_screen.png)](https://youtu.be/wpLir9pybTQ)
 
 As you can see in the video above, you need to **enable** the **Developer Settings** in Safari manually (only once unless you turn it off) so **selenium** is granted access. After that, `cd` into the working folder, input the information as shown and you are good to go. 
