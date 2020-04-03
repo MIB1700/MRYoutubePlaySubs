@@ -3,7 +3,7 @@
 # MRYoutubePlaySubs
  
 This repository contains the script and example text file for playing 
-random videos of random channels. This idea was started by the \#ifollowyouyoufollowme 
+random videos of random channels. This idea was started by the **[\#ifollowyouyoufollowme](https://www.facebook.com/search/top/?q=%23ifollowyouyoufollowme&epa=SEARCH_BOX)**
 movement on Facebook, where artist, musicians, composers, creatives, joined together
 to increase their visibility during the social distancing of the Covid19 pandemic.
 
@@ -15,9 +15,9 @@ content. As a side-effect, this should also allow everyone to increase their "mi
 
 You will need **Python 3** installed on your system. Currently this only works for **Safari** but other browsers (Chrome, Firefox) could be added as options if need be.
 
-For help with your Python installation **[see](https://www.python.org)**, or use 
+For help with your Python installation see **[Python.org](https://www.python.org)**, or use 
 **[homebrew](https://brew.sh)** or **[MacPorts](https://www.macports.org)**. If using 
-the package managers, don't forget to set update your **PATH** (MacOS ships with Python 2 by default, we want to ignore it!). 
+the package managers, don't forget to update your **PATH** (MacOS ships with Python 2 by default, we want to ignore it!). 
 
 For MacPorts (what I am using) run the following in the **terminal** (sudo means you will need to provide your user password): 
 
@@ -48,12 +48,13 @@ Now we should be ready to run the script...
 
 ## Run the script
 
-You will need a .txt file with a different link to a youtube channel on each line.
+You will need a **.txt** file with a different link to a youtube channel on each line.
 It should look something like this:
 ![](ImageForREADME/LinkFileExample.png)
 
 Each line should contain a single link. Make sure there aren't any empty lines (although the code should strip them out 🤞).
 There is a sample file in the repository you can use to test the script. Either add or replace the entries as needed or create your own... 
+
 
 To run the script, open **Terminal**:
 
@@ -86,3 +87,5 @@ For this example, rather than playing the whole video before moving on to the ne
 [![](ImageForREADME/Youtube_screen.png)](https://youtu.be/wpLir9pybTQ)
 
 As you can see in the video above, you need to **enable** the **Developer Settings** in Safari manually (only once unless you turn it off) so **selenium** is granted access. After that, `cd` into the working folder, input the information as shown and you are good to go. 
+
+You can send me feedback via[](mailto:services@martin-ritter.com) or via GitHub.
