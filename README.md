@@ -36,6 +36,7 @@ should output:
 To use the script we also need to install the **selenium** package. Run:
 
 ~`pip install selenium`~
+
 ~(might need to be **pip3** or **pip3.8** or whatever...).~
 
 turns out that when installing **selenium** via **pip** you cannot use it from the Terminal. So instead use **MacPorts** again:
@@ -57,6 +58,7 @@ There is a sample file in the repository you can use to test the script. Either 
 To run the script, open **Terminal**:
 
 `python3.8 ./MRYoutubePlaySubs.py --links MRYouTubeLinks.txt --numVids 3`
+
 This will run the script and using the file supplied with the `--links` argument. `--numVids` specifies the number of videos (3 in this case - this is also the default) to play from each channel before moving on to the next on the list. 
 
 Optional input: `--graceTime` adds extra/grace time after a channel is loaded to ensure that all the data we want is fully loaded (default 2 secs).
@@ -81,6 +83,6 @@ or
 
 For this example, rather than playing the whole video before moving on to the next, I hardcoded it to *5 seconds* to show the concept:
 
-[![Alternate Text](ImageForREADME/titleImage.png)](ImageForREADME/MRYoutubePythonExample.gif)
+[![](ImageForREADME/Youtube_screen.png)]([ImageForREADME/MRYoutubePythonExample.gif](https://youtu.be/wpLir9pybTQ)
 
-As you can see, you need to **enable** the **Developer Settings** in Safari manually (only once unless you turn it off) so **selenium** is granted access. After that, `cd` into the working folder, input the information as shown above and you are good to go. 
+As you can see in the video above, you need to **enable** the **Developer Settings** in Safari manually (only once unless you turn it off) so **selenium** is granted access. After that, `cd` into the working folder, input the information as shown and you are good to go. 
