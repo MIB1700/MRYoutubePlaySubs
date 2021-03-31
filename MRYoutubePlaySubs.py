@@ -3,11 +3,11 @@
     Script to open a browser and play videos of given channels
 
     Needed: text file with links to channels
-    
+
     Input: -l or --links <textfile>
            -n or --numVids <int>
            -g or --graceTime <int/float>
-            
+
     To stop the script:
             either close the  browser
             or ctrl + c (this will also quit the browser)
@@ -122,24 +122,24 @@ def WriteInfoToFile(url, vidInfo, totalTime):
 
     fileName = re.sub(r"\|.|!|/|;|:", "_", url)
     fileName = fileName + "_" + getDateString()
-    
+
     textFile = open(fileName + ".txt", "a+")
-        
+
 
     text = "Iteration: " + str(count)
     textFile.write(text)
     textFile.write("\n")
-    
+
     textFile.write("Video Name: ")
     textFile.write("\n")
     textFile.write(vidInfo[1])
     textFile.write("\n")
-    
+
     textFile.write("Video Plays: ")
     textFile.write("\n")
     textFile.write(vidInfo[2])
     textFile.write("\n")
-    
+
     textFile.write("Video Likes: ")
     textFile.write("\n")
     textFile.write(vidInfo[3])
@@ -154,10 +154,10 @@ def WriteInfoToFile(url, vidInfo, totalTime):
     textFile.write("\n\n\n")
 
     textFile.close()
-        
+
 
 def PlaySomething(driver, wait, link):
-    
+
     global maxVids
     global totalTime
     global bailOnChannel
@@ -175,7 +175,7 @@ def PlaySomething(driver, wait, link):
 
         if vidCount <= maxVids:
             maxVids = vidCount
-        
+
         if vidCount >= 1:
             randVid = random.randint(0, vidCount-1)
             print(f"randVid: {randVid}")
@@ -188,10 +188,10 @@ def PlaySomething(driver, wait, link):
 
             #click on the vid and play it
             curVid.click()
-        
+
             print(f"title: {info[1]}")
             print(f"duration: {info[0]}")
-        
+
             secs = VidLength2Secs(info[1])
             #global totalTime
             totalTime += secs
@@ -208,7 +208,7 @@ def PlaySomething(driver, wait, link):
     except:
         print("something else happened :(")
         exit(66)
-    
+
 def VidLength2Secs(vidLen):
     #check for how many ":"
     try:
@@ -226,7 +226,7 @@ def VidLength2Secs(vidLen):
 
 def GetVidInfo(info):
     splitting = [name.strip() for name in info.splitlines()]
-    splitting2 = [i for i in splitting if i] 
+    splitting2 = [i for i in splitting if i]
     del splitting2[1]
     # [time, title, views, upload date]
     return splitting2
@@ -278,7 +278,7 @@ def main():
         size = driver.get_window_size()
         #make it REALLY long so more videos can load and used
         driver.set_window_size(size['width'], size['height'] * 4)
-        
+
         #setup wait.until functions
         wait = WebDriverWait(driver, 10)
 
@@ -288,19 +288,19 @@ def main():
 
         #this will paly indefinitly or until something breaks
         #quit with ctr+d or by closing the browser
-  
+
         while running:
             #pick a random link
             link = PickRandomLink(lines)
 
-            #check the link is formatted properly 
+            #check the link is formatted properly
             curLink = CheckURL(link, "videos")
-    
+
             #pick a random video on the page and play it
             #when video is done, go back to all videos
-            #and pick another random one 
+            #and pick another random one
             for _ in range(maxVids):
-                
+
                 #.get opens the link and waits until the page loads
                 driver.get(curLink)
                 #however, since we are trying to get some information of the video
@@ -309,7 +309,7 @@ def main():
                 #increase if needed..
                 time.sleep(graceTime)
 
-                PlaySomething(driver, wait, curLink)                
+                PlaySomething(driver, wait, curLink)
 
                 #bail if there aren't videos on the page
                 if bailOnChannel:
@@ -330,8 +330,7 @@ def main():
         bailOnChannel = True
         driver.quit()
         exit(66)
-    
-    
+
 #------------------------------------------------------
 #------------------------------------------------------
 
