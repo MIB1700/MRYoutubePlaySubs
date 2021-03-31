@@ -3,11 +3,11 @@
     Script to open a browser and play videos of given channels
 
     Needed: text file with links to channels
-    
+
     Input: -l or --links <textfile>
            -n or --numVids <int>
            -g or --graceTime <int/float>
-            
+
     To stop the script:
             either close the  browser
             or ctrl + c (this will also quit the browser)
@@ -27,14 +27,12 @@ from contextlib import contextmanager
 import datetime
 import getopt as go
 import random
-from sys import *
+import sys
 import string
 import re
 import time
 
 #--------- VARS -------------
-vid_title = ""
-vid_duration = ""
 date = ""
 maxVids = 3
 count = 0
@@ -49,9 +47,9 @@ youtube = "https://www.youtube.com/channel/UCLJffad_3eSofXkBwAR8pKA/"
 
 #----------- process argv --------
 try:
-    opts, args = go.getopt(argv[1:],'hl:n:b:g:', ['browser=', 'links=', 'numVids=', 'graceTime='])
+    opts, args = go.getopt(sys.argv[1:],'hl:n:b:g:', ['browser=', 'links=', 'numVids=', 'graceTime='])
 except go.GetoptError:
-     print(f'{argv[0]}: something went wrong with the arguments')
+     print(f'{sys.argv[0]}: something went wrong with the arguments')
      print('needs 2 arguments:')
      print('1) -l or --links: path to a textfile containing links to the channels')
      print('2) -n or --numVids: number of videos to play from each channel before moving on to the next (default 3)')
@@ -73,7 +71,7 @@ for opt, arg in opts:
         graceTime = float(arg)
         print(f"--graceTime: {graceTime}")
     elif opt == '-h':
-        print(f'{argv[0]}: needs 2 arguments:')
+        print(f'{sys.argv[0]}: needs 2 arguments:')
         print('1) -l or --links: path to a textfile containing links to the channels')
         print('2) -n or --numVids: number of videos to play from each channel before moving on to the next (default 3)')
         print('3) (optional) -g or --graceTime: extra time after channel load to allow information to be downloaded (default 2)')
@@ -119,12 +117,49 @@ def getDateString():
     date = datetime.datetime.now()
     return date.strftime("%x_%X")
 
-def PlaySomething(driver, wait):
-    
+def WriteInfoToFile(url, vidInfo, totalTime):
+    # vidInfo[time, title, views, upload date]
+
+    fileName = re.sub(r"\|.|!|/|;|:", "_", url)
+    fileName = fileName + "_" + getDateString()
+
+    textFile = open(fileName + ".txt", "a+")
+
+
+    text = "Iteration: " + str(count)
+    textFile.write(text)
+    textFile.write("\n")
+
+    textFile.write("Video Name: ")
+    textFile.write("\n")
+    textFile.write(vidInfo[1])
+    textFile.write("\n")
+
+    textFile.write("Video Plays: ")
+    textFile.write("\n")
+    textFile.write(vidInfo[2])
+    textFile.write("\n")
+
+    textFile.write("Video Likes: ")
+    textFile.write("\n")
+    textFile.write(vidInfo[3])
+    textFile.write("\n")
+
+    textFile.write("Video Dislikes: ")
+    textFile.write("\n")
+    textFile.write(vidInfo[3])
+    textFile.write("\n")
+
+    textFile.write("Played for " + str(totalTime) + " secs")
+    textFile.write("\n\n\n")
+
+    textFile.close()
+
+
+def PlaySomething(driver, wait, link):
+
     global maxVids
     global totalTime
-    global vid_duration
-    global vid_title
     global bailOnChannel
 
     try:
@@ -132,10 +167,15 @@ def PlaySomething(driver, wait):
         vidCount = len(grid)
         print(f"num Vids on page: {vidCount}")
         #make sure the maxVids count is equal or less than the total amount of videos available
+        # //*[@id="container"]
+        #//*[@id="subscriber-count"]
+        # //*[@id="container"]
+        # //*[@id="contentContainer"]
+#        test = wait.until(EC.presence_of_element_located((By.XPATH, "//*[@id='contentContainer']")))
 
         if vidCount <= maxVids:
             maxVids = vidCount
-        
+
         if vidCount >= 1:
             randVid = random.randint(0, vidCount-1)
             print(f"randVid: {randVid}")
@@ -144,26 +184,31 @@ def PlaySomething(driver, wait):
             curVid = grid[randVid]
 
             #extract info from the choosen vid
-            vid_duration, vid_title = GetVidInfo(curVid.text)
+            info = GetVidInfo(curVid.text)
 
             #click on the vid and play it
             curVid.click()
-        
-            print(f"title: {vid_title}")
-            print(f"duration: {vid_duration}")
-        
-            secs = VidLength2Secs(vid_duration)
+
+            print(f"title: {info[1]}")
+            print(f"duration: {info[0]}")
+
+            secs = VidLength2Secs(info[1])
             #global totalTime
             totalTime += secs
             print(f"total time: {totalTime}")
 
+            WriteInfoToFile(link, info, totalTime)
+
             bailOnChannel = False
             time.sleep(secs)
-    except:
+    except TimeoutException:
         print("no videos found on profile...")
         bailOnChannel = True
         pass
-    
+    except:
+        print("something else happened :(")
+        exit(66)
+
 def VidLength2Secs(vidLen):
     #check for how many ":"
     try:
@@ -180,10 +225,11 @@ def VidLength2Secs(vidLen):
         return 20
 
 def GetVidInfo(info):
-
     splitting = [name.strip() for name in info.splitlines()]
-    splitting2 = [i for i in splitting if i] 
-    return splitting2[0], splitting2[2]
+    splitting2 = [i for i in splitting if i]
+    del splitting2[1]
+    # [time, title, views, upload date]
+    return splitting2
 
 def OpenLinksFile(file):
     try:
@@ -213,8 +259,9 @@ def PickRandomLink(links):
 #------------------------------------------------------
 #------------------------------------------------------
 def main():
-
     try:
+        global running
+        global bailOnChannel
          #open a browser window
         #here you could switch to a different browser type like Chrome or Firefox
         driver = webdriver.Safari()
@@ -231,7 +278,7 @@ def main():
         size = driver.get_window_size()
         #make it REALLY long so more videos can load and used
         driver.set_window_size(size['width'], size['height'] * 4)
-        
+
         #setup wait.until functions
         wait = WebDriverWait(driver, 10)
 
@@ -241,18 +288,19 @@ def main():
 
         #this will paly indefinitly or until something breaks
         #quit with ctr+d or by closing the browser
+
         while running:
             #pick a random link
             link = PickRandomLink(lines)
 
-            #check the link is formatted properly 
+            #check the link is formatted properly
             curLink = CheckURL(link, "videos")
-    
+
             #pick a random video on the page and play it
             #when video is done, go back to all videos
-            #and pick another random one 
+            #and pick another random one
             for _ in range(maxVids):
-                
+
                 #.get opens the link and waits until the page loads
                 driver.get(curLink)
                 #however, since we are trying to get some information of the video
@@ -261,7 +309,7 @@ def main():
                 #increase if needed..
                 time.sleep(graceTime)
 
-                PlaySomething(driver, wait)                
+                PlaySomething(driver, wait, curLink)
 
                 #bail if there aren't videos on the page
                 if bailOnChannel:
@@ -270,9 +318,19 @@ def main():
         print("Chances are your Safari still has a tab open \nthat is/was in automation mode!!")
         print("CLOSE IT!!! and run the script again...")
         exit(1)
-    
-    #no way to get to this right now...
-    driver.quit()
+    except KeyboardInterrupt:
+        raise
+    except:
+        print("----------------------------")
+        print("----------------------------")
+        print("program quit with ctr+c... closing browser and quitting!!!")
+        print("----------------------------")
+        print("----------------------------")
+        running = False
+        bailOnChannel = True
+        driver.quit()
+        exit(66)
+
 #------------------------------------------------------
 #------------------------------------------------------
 
